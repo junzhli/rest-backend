@@ -20,12 +20,12 @@ Restaurant.init({
     }
 }, {
     sequelize: db.getSequelizeInstance(),
-    modelName: 'Restaurant'
+    modelName: "Restaurant"
 });
 
 Restaurant.hasMany(Menu, {foreignKey: "restId", sourceKey: "id"});
 Menu.belongsTo(Restaurant, {foreignKey: "restId", targetKey: "id"});
 Restaurant.hasMany(OpeningHour, {foreignKey: "restId", sourceKey: "id"});
-OpeningHour.belongsTo(Restaurant, {foreignKey: "restId", targetKey: "id"})
+OpeningHour.belongsTo(Restaurant, {foreignKey: "restId", targetKey: "id"});
 
 export default Restaurant;

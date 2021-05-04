@@ -1,6 +1,5 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../lib/db";
-import Restaurant from "./restaurant";
 
 class Menu extends Model {}
 
@@ -20,7 +19,7 @@ Menu.init({
     }
 }, {
     sequelize: db.getSequelizeInstance(),
-    modelName: 'Menu'
+    modelName: "Menu"
 });
 
 export default Menu;

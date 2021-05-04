@@ -18,7 +18,7 @@ User.init({
     },
 }, {
     sequelize: db.getSequelizeInstance(),
-    modelName: 'User'
+    modelName: "User"
 });
 
 export default User;

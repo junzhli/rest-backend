@@ -1,14 +1,12 @@
 /** Bootstrap data in database */
-import { Sequelize } from "sequelize";
-import db from "../src/lib/db";
+
 import restWithMenu from "../misc/restaurant_with_menu.json";
-import userWithPurchase from "../misc/users_with_purchase_history.json";
+import db from "../src/lib/db";
 import logger from "../src/lib/logger";
-import Restaurant from "../src/model/restaurant";
 import Menu from "../src/model/menu";
 import OpeningHour from "../src/model/openingHour";
+import Restaurant from "../src/model/restaurant";
 import { IOpeningHour } from "./types/database";
-import { connect } from "node:http2";
 
 /** SQL Schema */
 
@@ -34,7 +32,7 @@ const parseWeekdays = (openingHours: string) => {
     const weekDays: number[] = [];
     let weekDay: string[] = [];
     let subsequent: boolean = false;
-    for (let c of openingHours) {
+    for (const c of openingHours) {
         if (c === ",") {
             if (subsequent) {
                 const start = weekDays[0];
@@ -88,7 +86,7 @@ const parseWeekdays = (openingHours: string) => {
     }
 
     return weekDays;
-}
+};
 
 const parseTimeRange = (openingHours: string) => {
     if (openingHours.length < 1) {
@@ -96,7 +94,7 @@ const parseTimeRange = (openingHours: string) => {
     } 
 
     let startAt = 0;
-    for (let c of openingHours) {
+    for (const c of openingHours) {
         const code = c.charCodeAt(0);
         if (code > 47 && code < 58) { // non 0-9
             break;
@@ -113,7 +111,7 @@ const parseTimeRange = (openingHours: string) => {
     for (let i = startAt; i < openingHours.length; i++) {
         // assume any word starting 'a' meaning 'am', starting 'p' meaning 'pm'
         const c = openingHours.charAt(i);
-        if (c === 'a' || c === 'p') {
+        if (c === "a" || c === "p") {
             let _openingHour = openingHours.substring(startAt, i);
             if (!containsMinutes) {
                 _openingHour += ":00";
@@ -126,27 +124,27 @@ const parseTimeRange = (openingHours: string) => {
                 endTime = _openingHour;
             }
             continue;
-        } else if (c === '-') {
+        } else if (c === "-") {
             _endTime = true;
             containsMinutes = false;
             startAt = i + 1;
-        } else if (c === ':') {
+        } else if (c === ":") {
             containsMinutes = true;
         }
     }
 
     return { startTime, endTime };
-}
+};
 
 const parseOpeningHour = (openingHours: string) => {
     const timeRanges = openingHours.replace(/\s+/g, "").split("/"); // remove whitespaces and splited by '/'
     // Mon,Fri2:30pm-8pm
     const _openingHours: IOpeningHour[] = [];
-    for (let t of timeRanges) {
+    for (const t of timeRanges) {
         const {startTime, endTime} = parseTimeRange(t);
         const weekDays = parseWeekdays(t);  
 
-        for (let weekDay of weekDays) {
+        for (const weekDay of weekDays) {
             _openingHours.push({
                 weekDay,
                 startTime,
@@ -155,7 +153,7 @@ const parseOpeningHour = (openingHours: string) => {
         }
     }
     return _openingHours;
-}
+};
 
 const mappingRest = new Map();
 
@@ -176,8 +174,8 @@ const bootstrapRestWithMenu = async () => {
         });
         Array.prototype.push.apply(menus, _menus);
 
-        const _openingHours = parseOpeningHour(value.openingHours).map((value) => {
-            const {weekDay, startTime, endTime} = value;
+        const _openingHours = parseOpeningHour(value.openingHours).map((_value) => {
+            const {weekDay, startTime, endTime} = _value;
 
             const openingHour = OpeningHour.build({
                 weekDay,
@@ -197,16 +195,16 @@ const bootstrapRestWithMenu = async () => {
         });
 
         return rest;
-    })
+    });
 
     await Promise.all(rests.map(r => r.save()));
     await Promise.all(menus.map(m => m.save()));
     await Promise.all(openingHours.map(o => o.save()));
-}
+};
 
-const parseUserWithPurchase = () => {
+// const parseUserWithPurchase = () => {
     
-}
+// };
 
 /** Main program */
 db.getConnection()
@@ -217,14 +215,14 @@ db.getConnection()
         return bootstrapRestWithMenu();
     })
     .then(_ => {
-        console.log("succeses");
+        log.info("Successfully bootstrap data into database");
     })
     .catch(error => {
         log.error("bootstraping database failure...");
         log.log({
             level: "error",
             message: "",
-            error: error
+            error
         });
     });
 

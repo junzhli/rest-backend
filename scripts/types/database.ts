@@ -1,5 +1,5 @@
 export interface IOpeningHour {
-    weekDay: number,
-    startTime: string,
-    endTime: string,
+    weekDay: number;
+    startTime: string;
+    endTime: string;
 }

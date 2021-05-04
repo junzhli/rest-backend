@@ -55,7 +55,7 @@ class Database {
             log.log({
                 level: "error",
                 message: "",
-                error: error
+                error
             });
             return false;
         }

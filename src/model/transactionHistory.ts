@@ -22,7 +22,7 @@ TransactionHistory.init({
     }
 }, {
     sequelize: db.getSequelizeInstance(),
-    modelName: 'TransactionHistory'
+    modelName: "TransactionHistory"
 });
 
 export default TransactionHistory;

@@ -1,6 +1,5 @@
 import { DataTypes, Model } from "sequelize";
 import db from "../lib/db";
-import Restaurant from "./restaurant";
 
 class OpeningHour extends Model {}
 
@@ -24,7 +23,7 @@ OpeningHour.init({
     }
 }, {
     sequelize: db.getSequelizeInstance(),
-    modelName: 'OpeningHour'
+    modelName: "OpeningHour"
 });
 
 export default OpeningHour;
