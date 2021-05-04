@@ -11,7 +11,20 @@ class Database {
     constructor({ 
         connectionUri = "postgres://user:pass@example.com:5432/dbname",
      }: IDBConfigOptions) {
-        this.instance = new Sequelize(connectionUri);
+        this.instance = new Sequelize(connectionUri, {logging: true});
+        
+        // this.instance.sync()
+        //     .then(_ => {
+        //         log.info("Defind models syncing success");
+        //     })
+        //     .catch((error) => {
+        //         log.error("Defind models syncing failure");
+        //         log.log({
+        //             level: "error",
+        //             message: "",
+        //             error: error
+        //         });
+        //     })
 
         this.checkConnection()
             .then((connected) => {

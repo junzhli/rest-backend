@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize/types";
+import { DataTypes, Model } from "sequelize";
 import db from "../lib/db";
 import Restaurant from "./restaurant";
 
@@ -11,19 +11,12 @@ Menu.init({
         primaryKey: true,
     },
     dishName: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(500),
         allowNull: false
     },
     price: {
         type: DataTypes.FLOAT,
         allowNull: false
-    },
-    restId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Restaurant,
-            key: "id"
-        }
     }
 }, {
     sequelize: db.getSequelizeInstance(),

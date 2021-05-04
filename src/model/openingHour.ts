@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize/types";
+import { DataTypes, Model } from "sequelize";
 import db from "../lib/db";
 import Restaurant from "./restaurant";
 
@@ -10,7 +10,7 @@ OpeningHour.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    startWeekday: {
+    weekDay: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
@@ -18,20 +18,9 @@ OpeningHour.init({
         type: DataTypes.TIME,
         allowNull: false
     },
-    endWeekday: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
     endTime: {
         type: DataTypes.TIME,
         allowNull: false
-    },
-    restId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Restaurant,
-            key: "id"
-        }
     }
 }, {
     sequelize: db.getSequelizeInstance(),

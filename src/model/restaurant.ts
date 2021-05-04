@@ -1,5 +1,7 @@
-import { DataTypes, Model } from "sequelize/types";
+import { DataTypes, Model } from "sequelize";
 import db from "../lib/db";
+import Menu from "./menu";
+import OpeningHour from "./openingHour";
 
 class Restaurant extends Model {}
 
@@ -9,7 +11,7 @@ Restaurant.init({
         primaryKey: true,
     },
     name: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(500),
         allowNull: false
     },
     cashBalance: {
@@ -20,5 +22,10 @@ Restaurant.init({
     sequelize: db.getSequelizeInstance(),
     modelName: 'Restaurant'
 });
+
+Restaurant.hasMany(Menu, {foreignKey: "restId", sourceKey: "id"});
+Menu.belongsTo(Restaurant, {foreignKey: "restId", targetKey: "id"});
+Restaurant.hasMany(OpeningHour, {foreignKey: "restId", sourceKey: "id"});
+OpeningHour.belongsTo(Restaurant, {foreignKey: "restId", targetKey: "id"})
 
 export default Restaurant;

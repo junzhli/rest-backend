@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize/types";
+import { DataTypes, Model } from "sequelize";
 import db from "../lib/db";
 
 class TransactionHistory extends Model {}
