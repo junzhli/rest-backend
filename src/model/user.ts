@@ -21,4 +21,5 @@ User.init({
     modelName: "User"
 });
 
+
 export default User;

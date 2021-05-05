@@ -11,7 +11,7 @@ class Database {
     constructor({ 
         connectionUri = "postgres://user:pass@example.com:5432/dbname",
      }: IDBConfigOptions) {
-        this.instance = new Sequelize(connectionUri, {logging: true});
+        this.instance = new Sequelize(connectionUri, {logging: false});
         
         // this.instance.sync()
         //     .then(_ => {

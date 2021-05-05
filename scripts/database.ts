@@ -1,11 +1,14 @@
 /** Bootstrap data in database */
 
 import restWithMenu from "../misc/restaurant_with_menu.json";
+import userWithPurchase from "../misc/users_with_purchase_history.json";
 import db from "../src/lib/db";
 import logger from "../src/lib/logger";
 import Menu from "../src/model/menu";
 import OpeningHour from "../src/model/openingHour";
 import Restaurant from "../src/model/restaurant";
+import TransactionHistory from "../src/model/transactionHistory";
+import User from "../src/model/user";
 import { IOpeningHour } from "./types/database";
 
 /** SQL Schema */
@@ -155,7 +158,10 @@ const parseOpeningHour = (openingHours: string) => {
     return _openingHours;
 };
 
-const mappingRest = new Map();
+// invoke 'bootstrapRestWithMenu' to get mapping cache
+const mappingRest: Map<string, number> = new Map();
+const mappingDishKey = (restId: number, dishName: string) => `${restId}|_|${dishName}`;
+const mappingDish: Map<string, number> = new Map();
 
 const bootstrapRestWithMenu = async () => {
     const menus: Menu[] = [];
@@ -167,7 +173,7 @@ const bootstrapRestWithMenu = async () => {
             const menu = Menu.build({
                 dishName: _value.dishName,
                 price: _value.price,
-                restId: index
+                restId: index,
             });
 
             return menu;
@@ -198,13 +204,54 @@ const bootstrapRestWithMenu = async () => {
     });
 
     await Promise.all(rests.map(r => r.save()));
-    await Promise.all(menus.map(m => m.save()));
+    const savedMenus = await Promise.all(menus.map(m => m.save()));
+    savedMenus.map((m) => {
+        mappingDish.set(mappingDishKey(m.restId, m.dishName), m.id);
+    });
     await Promise.all(openingHours.map(o => o.save()));
 };
 
-// const parseUserWithPurchase = () => {
-    
-// };
+const bootstrapUserWithPurchase = async () => {
+    const purchaseHistories: TransactionHistory[] = [];
+    const users: User[] = userWithPurchase.map((value, index) => {
+        const {id, name, cashBalance, purchaseHistory} = value;
+
+        const _purchaseHistories = purchaseHistory.map((_value, _index) => {
+            const {dishName, restaurantName, transactionAmount, transactionDate} = _value;
+            
+            const restId = mappingRest.get(restaurantName);
+            if (restId === undefined) {
+                throw new Error(`restId is undefined: ${restaurantName}`);
+            }
+
+            const menuId = mappingDish.get(mappingDishKey(restId, dishName));
+            if (menuId === undefined) {
+                throw new Error(`menuId is undefined ${restId} ${dishName}`);
+            }
+
+            const _purchaseHistory = TransactionHistory.build({
+                name: dishName,
+                amount: transactionAmount,
+                date: transactionDate,
+                menuId,
+                userId: id,
+                restId,
+            });
+            return _purchaseHistory;
+        });
+        Array.prototype.push.apply(purchaseHistories, _purchaseHistories);
+
+        const user = User.build({
+            id,
+            name,
+            cashBalance
+        });
+        return user;
+    });
+
+    await Promise.all(users.map(u => u.save()));
+    await Promise.all(purchaseHistories.map(p => p.save()));
+};
 
 /** Main program */
 db.getConnection()
@@ -212,7 +259,12 @@ db.getConnection()
         return conn.sync();
     })
     .then(_ => {
+        log.info("bootstrapRestWithMenu...");
         return bootstrapRestWithMenu();
+    })
+    .then(_ => {
+        log.info("bootstrapUserWithPurchase...");
+        return bootstrapUserWithPurchase();
     })
     .then(_ => {
         log.info("Successfully bootstrap data into database");
