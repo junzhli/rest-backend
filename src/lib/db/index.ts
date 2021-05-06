@@ -22,6 +22,12 @@ class Database {
                         require: true,
                         rejectUnauthorized: false
                     }
+                },
+                pool: {
+                    max: 10,
+                    min: 0,
+                    acquire: 180000,
+                    idle: 10000
                 }
             } : {
                 logging: verboseLogging
