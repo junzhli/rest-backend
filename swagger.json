@@ -1,0 +1,327 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "",
+    "version": "1.0.0",
+    "title": "backend api",
+    "termsOfService": "",
+    "contact": {
+      "email": "junzhli@gmail.com"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Requested APIs",
+      "description": "Everything about apis"
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/payment/user/purchase": {
+      "post": {
+        "tags": [
+          "payment"
+        ],
+        "summary": "Process a user purchasing a dish from a restaurant, handling all relevant data changes in an atomic transaction",
+        "description": "",
+        "parameters": [
+          {
+            "name": "Payload",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "userId",
+                "dishId"
+              ],
+              "properties": {
+                "userId": {
+                  "type": "number"
+                },
+                "dishId": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "string",
+                  "description": "Successful message"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "BadRequest",
+            "schema": {
+              "$ref": "#/definitions/GeneralErrorMessage"
+            }
+          }
+        }
+      }
+    },
+    "/search/price": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "summary": "List top y restaurants that have more or less than x number of dishes within a price range",
+        "description": "",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "top",
+            "type": "number",
+            "required": true,
+            "default": "10"
+          },
+          {
+            "in": "query",
+            "name": "priceStart",
+            "type": "number",
+            "required": true,
+            "default": "5"
+          },
+          {
+            "in": "query",
+            "name": "priceEnd",
+            "type": "number",
+            "required": true,
+            "default": "30"
+          },
+          {
+            "in": "query",
+            "name": "equality",
+            "type": "number",
+            "required": true,
+            "default": "1",
+            "description": "0: less than, 1: greater than"
+          },
+          {
+            "in": "query",
+            "name": "dishes",
+            "type": "number",
+            "required": true,
+            "default": "8"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Nothing found",
+            "schema": {
+              "$ref": "#/definitions/NotFoundArrayMessage"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/GeneralErrorMessage"
+            }
+          },
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RestaurantObject"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/name": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "summary": "Search for restaurants or dishes by name, ranked by relevance to search term",
+        "description": "",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "default": "apple"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Nothing found",
+            "schema": {
+              "$ref": "#/definitions/NotFoundArrayMessage"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/GeneralErrorMessage"
+            }
+          },
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "description": "Array of items ranked by relevance",
+              "items": {
+                "required": [
+                  "id",
+                  "name",
+                  "type"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "number"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "rest or dish"
+                  },
+                  "restId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/date": {
+      "get": {
+        "tags": [
+          "search"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date",
+            "type": "string",
+            "required": true,
+            "default": "2020-12-30"
+          },
+          {
+            "in": "query",
+            "name": "time",
+            "type": "string",
+            "required": true,
+            "default": "12:10"
+          }
+        ],
+        "summary": "List all restaurants that are open at a certain datetime",
+        "description": "",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RestaurantObject"
+              }
+            }
+          },
+          "404": {
+            "description": "Nothing found",
+            "schema": {
+              "$ref": "#/definitions/NotFoundArrayMessage"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/GeneralErrorMessage"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "RestaurantObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "cashBalance"
+      ],
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "cashBalance": {
+          "type": "number"
+        },
+        "weekDay": {
+          "type": "number"
+        },
+        "startTime": {
+          "type": "string"
+        },
+        "endTime": {
+          "type": "string"
+        }
+      }
+    },
+    "GeneralErrorMessage": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "number",
+          "default": "Error code"
+        },
+        "message": {
+          "type": "number",
+          "default": "Detailed error message"
+        }
+      }
+    },
+    "NotFoundArrayMessage": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "example": []
+    },
+    "SuccessfulMessage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}
