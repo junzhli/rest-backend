@@ -13,7 +13,7 @@ fi
 
 PROCESS_2_DIED=0
 # bootstrap database
-if [ ! -z "{$DB_BOOTSTRAP}" ]; then
+if [ ! -z "${DB_BOOTSTRAP}" ]; then
   echo "Bootstrap database option disabled"
   PROCESS_2_DIED=1
 else
