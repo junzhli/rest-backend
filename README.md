@@ -6,7 +6,7 @@
 - [Backend APIs](#backend-apis)
   - [Table of Contents](#table-of-contents)
   - [Prerequisite](#prerequisite)
-  - [Building and test](#building-and-test)
+  - [Building](#building)
   - [Run](#run)
   - [Bootstrap database from script](#bootstrap-database-from-script)
   - [Available APIs](#available-apis)
@@ -17,9 +17,9 @@ Prerequisite
 -----
 * Nodejs >= v12
 * Yarn
-* ProgresSql >= v13.2
+* ProgresSql >= v13.2 (with extension installed: pg_trgm)
 
-Building and test
+Building
 -----
 
 * Build
