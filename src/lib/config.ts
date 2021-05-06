@@ -1,5 +1,5 @@
-import { IDBConfigOptions } from "./types/db";
 import dotenv from "dotenv";
+import { IDBConfigOptions } from "./types/db";
 
 dotenv.config();
 
