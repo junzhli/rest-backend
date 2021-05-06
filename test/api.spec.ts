@@ -57,6 +57,21 @@ describe("integration testings", () => {
             }
         }, GLOBAL_API_TIMEOUT);
 
+        test(`it should return error message with code 400 as invalid request`, async () => {
+            const response = await supertest(app)
+                .get("/search/date")
+                .query({
+                    date: "2020-12",
+                    time: "12:"
+                });
+
+            expect(response.status).toBe(400);
+            expect(response.headers["content-type"]).toBe(HEADER_CONTENT_TYPE);
+            expect(typeof response.body).toBe("object");
+            expect(typeof response.body.error).toBe("number");
+            expect(typeof response.body.message).toBe("string");
+        }, GLOBAL_API_TIMEOUT);
+
         test("it should be ok to list top x restaurants with less/more than y dishes within price range", async () => {
             const response = await supertest(app)
                 .get("/search/price")
@@ -79,12 +94,40 @@ describe("integration testings", () => {
             }
         }, GLOBAL_API_TIMEOUT);
 
-        // test(`it should be ok to return nothing with code 404 by non-existing id`, async () => {
-        //     const response = await supertest(app)
-        //         .get(`/heroes/aaaaaaaaaaaaaaaaaaaaaaaaa`);
+        test(`it should return error message with code 400 as invalid request`, async () => {
+            const response = await supertest(app)
+                .get("/search/price")
+                .query({
+                    top: 10,
+                    priceStart: 0,
+                    priceEnd: 1,
+                    equality: 1,
+                    dishes: 8
+                });
 
-        //     expect(response.status).toBe(httpStatusCode.NOT_FOUND);
-        // }, GLOBAL_API_TIMEOUT);
+            expect(response.status).toBe(404);
+            expect(response.headers["content-type"]).toBe(HEADER_CONTENT_TYPE);
+            expect(typeof response.body).toBe("object");
+            expect(Array.isArray(response.body)).toBe(true);
+        }, GLOBAL_API_TIMEOUT);
+
+        test(`it should return error message with code 400 as invalid request`, async () => {
+            const response = await supertest(app)
+                .get("/search/price")
+                .query({
+                    priceStart: 5,
+                    priceEnd: 30,
+                    equality: 1,
+                    dishes: 8
+                });
+
+            expect(response.status).toBe(400);
+            expect(response.headers["content-type"]).toBe(HEADER_CONTENT_TYPE);
+            expect(typeof response.body).toBe("object");
+            expect(typeof response.body.error).toBe("number");
+            expect(typeof response.body.message).toBe("string");
+        }, GLOBAL_API_TIMEOUT);
+
 
         test(`it should be ok to list results from the query by name in either dish or restaurant, ranked by relevance`, async () => {
             const response = await supertest(app)
@@ -107,6 +150,17 @@ describe("integration testings", () => {
             }
         }, GLOBAL_API_TIMEOUT);
 
+        test(`it should return error message with code 400 as invalid request`, async () => {
+            const response = await supertest(app)
+                .get(`/search/name`);
+
+            expect(response.status).toBe(400);
+            expect(response.headers["content-type"]).toBe(HEADER_CONTENT_TYPE);
+            expect(typeof response.body).toBe("object");
+            expect(typeof response.body.error).toBe("number");
+            expect(typeof response.body.message).toBe("string");
+        }, GLOBAL_API_TIMEOUT);
+
         test(`it should be ok to purchase dish by user`, async () => {
             const response = await supertest(app)
                 .post(`/payment/user/purchase`)
@@ -120,6 +174,35 @@ describe("integration testings", () => {
             expect(response.headers["content-type"]).toBe(HEADER_CONTENT_TYPE);
             expect(typeof response.body).toBe("object");
             expect(typeof response.body.success).toBe("string");
+        }, GLOBAL_API_TIMEOUT);
+
+        test(`it should return error message with code 400 as invalid request`, async () => {
+            let response = await supertest(app)
+                .post(`/payment/user/purchase`)
+                .send({
+                    userId: 9999999999,
+                    dishId: 1
+                })
+                .set("Content-Type", "application/json");
+
+            expect(response.status).toBe(400);
+            expect(response.headers["content-type"]).toBe(HEADER_CONTENT_TYPE);
+            expect(typeof response.body).toBe("object");
+            expect(typeof response.body.error).toBe("number");
+            expect(typeof response.body.message).toBe("string");
+
+            response = await supertest(app)
+                .post(`/payment/user/purchase`)
+                .send({
+                    dishId: 1
+                })
+                .set("Content-Type", "application/json");
+
+            expect(response.status).toBe(400);
+            expect(response.headers["content-type"]).toBe(HEADER_CONTENT_TYPE);
+            expect(typeof response.body).toBe("object");
+            expect(typeof response.body.error).toBe("number");
+            expect(typeof response.body.message).toBe("string");
         }, GLOBAL_API_TIMEOUT);
     });
 });
