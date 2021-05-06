@@ -48,7 +48,13 @@ OpeningHour.init({
     }
 }, {
     sequelize: db.getSequelizeInstance(),
-    modelName: "OpeningHour"
+    modelName: "OpeningHour",
+    indexes: [
+        {
+            name: "comp_idx_openinghours_starttime_endtime",
+            fields: ["startTime", "endTime"],
+        }
+    ]
 });
 
 export default OpeningHour;

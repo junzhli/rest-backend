@@ -46,7 +46,15 @@ Restaurant.init({
     }
 }, {
     sequelize: db.getSequelizeInstance(),
-    modelName: "Restaurant"
+    modelName: "Restaurant",
+    indexes: [
+        {
+            name: "trgm_idx_restaurants_name",
+            fields: ["name"],
+            using: "gist",
+            operator: "gist_trgm_ops"
+        }
+    ]
 });
 
 /** Relations */

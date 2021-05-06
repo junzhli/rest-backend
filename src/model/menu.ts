@@ -47,7 +47,15 @@ Menu.init({
     }
 }, {
     sequelize: db.getSequelizeInstance(),
-    modelName: "Menu"
+    modelName: "Menu",
+    indexes: [
+        {
+            name: "trgm_idx_menu_dishName",
+            fields: ["dishName"],
+            using: "gist",
+            operator: "gist_trgm_ops"
+        }
+    ]
 });
 
 export default Menu;
