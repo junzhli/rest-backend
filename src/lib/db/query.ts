@@ -67,7 +67,7 @@ const findUser = (userId: number) => {
 
 const findDish = (dishId: number) => {
     return Menu.findOne({
-        attributes: ["id"],
+        attributes: ["id", "price"],
         where: {
             id: dishId
         }
@@ -90,7 +90,7 @@ const processUserPurchaseWithDish = async (userId: number, dishId: number) => {
         }
 
         const usersAffected = await User.update({
-            cashBalance: literal(`cashBalance-${menu.price}`)
+            cashBalance: literal(`"cashBalance"-${menu.price}`)
         }, {
             where: {
                 id: userId,
@@ -105,7 +105,7 @@ const processUserPurchaseWithDish = async (userId: number, dishId: number) => {
         }
 
         const restsAffected = await Restaurant.update({
-            cashBalance: literal(`cashBalance+${menu.price}`)
+            cashBalance: literal(`"cashBalance"+${menu.price}`)
         }, {
             where: {
                 id: menu.restId

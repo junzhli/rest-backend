@@ -37,7 +37,7 @@ TransactionHistory.init({
         allowNull: false
     },
     amount: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.DECIMAL,
         allowNull: false
     },
     date: {

@@ -33,7 +33,7 @@ Restaurant.init({
         allowNull: false
     },
     cashBalance: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.DECIMAL,
         allowNull: false
     }
 }, {

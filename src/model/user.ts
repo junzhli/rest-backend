@@ -25,7 +25,7 @@ User.init({
         primaryKey: true,
     },
     cashBalance: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.DECIMAL,
         allowNull: false
     },
     name: {

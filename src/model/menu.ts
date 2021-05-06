@@ -31,7 +31,7 @@ Menu.init({
         allowNull: false
     },
     price: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.DECIMAL,
         allowNull: false
     },
     restId: {
