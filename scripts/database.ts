@@ -28,7 +28,7 @@ const WEEK_DAY = new Map(Object.entries({
     Thurs: 4,
     Fri: 5,
     Sat: 6,
-    Sun: 7
+    Sun: 0
 }));
 
 const parseWeekdays = (openingHours: string) => {
@@ -41,13 +41,13 @@ const parseWeekdays = (openingHours: string) => {
                 const start = weekDays[0];
                 const _weekDay = weekDay.join("");
                 const end = WEEK_DAY.get(_weekDay);
-                if (!end) {
+                if (end === undefined) {
                     throw new Error(`unable to get value end ${_weekDay}`);
                 }
 
                 for (let i = start + 1; i !== end; i++) {
-                    if (i > 7) {
-                        i = 0;
+                    if (i > 6) {
+                        i = -1;
                         continue;
                     }
 
@@ -57,7 +57,7 @@ const parseWeekdays = (openingHours: string) => {
             } else {
                 const _weekDay = weekDay.join("");
                 const id = WEEK_DAY.get(_weekDay);
-                if (!id) {
+                if (id === undefined) {
                     throw new Error(`unable to get id value in weekDays ${_weekDay}`);
                 }
                 weekDays.push(id);
@@ -72,7 +72,7 @@ const parseWeekdays = (openingHours: string) => {
             subsequent = true;
             const _weekDay = weekDay.join("");
             const id = WEEK_DAY.get(_weekDay);
-            if (!id) {
+            if (id === undefined) {
                 throw new Error(`unable to get id value in weekDays ${_weekDay}`);
             }
             weekDays.push(id);
@@ -277,6 +277,3 @@ db.getConnection()
             error
         });
     });
-
-
-
