@@ -1,5 +1,5 @@
 import express from "express";
-import { purchaseDish } from "../controller/restaurant";
+import { purchaseDish } from "../controller/payment";
 import inputValidator from "../middleware/inputValidator";
 
 export default () => {

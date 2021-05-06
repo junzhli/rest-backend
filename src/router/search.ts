@@ -1,5 +1,5 @@
 import express from "express";
-import { getRestaurantsByDate, getRestaurantsByDishPriceRangeAndNumberOfDishes, getResturantsOrDishesByName } from "../controller/restaurant";
+import { getRestaurantsByDate, getRestaurantsByDishPriceRangeAndNumberOfDishes, getResturantsOrDishesByName } from "../controller/search";
 import inputValidator from "../middleware/inputValidator";
 
 export default () => {
@@ -10,6 +10,10 @@ export default () => {
     /** Search API */
 
     // search by date
+    /** 
+     * @swagger
+     * 
+     */
     router.get("/date", inputValidator.restaurantQueryInput, inputValidator.resultHandler, getRestaurantsByDate);
 
     // search by price
