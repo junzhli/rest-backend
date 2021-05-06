@@ -3,7 +3,7 @@ import db from "../lib/db";
 
 interface TransactionHistoryAttributes {
     id: number;
-    amount: number;
+    amount: number | string;
     name: string;
     date: Date | string;
     menuId: number;
@@ -38,7 +38,15 @@ TransactionHistory.init({
     },
     amount: {
         type: DataTypes.DECIMAL,
-        allowNull: false
+        allowNull: false,
+        get() {
+            const value = this.getDataValue("amount");
+            if (typeof value !== "string") {
+                return value;
+            }
+
+            return parseFloat(value);
+        }
     },
     date: {
         type: DataTypes.DATE,

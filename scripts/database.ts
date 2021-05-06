@@ -254,8 +254,14 @@ const bootstrapUserWithPurchase = async () => {
 };
 
 /** Main program */
-db.getConnection()
+const main = () => {
+    db.getConnection()
     .then(conn => {
+        log.info("Dropping tables...");
+        return Promise.all([Promise.resolve(conn), conn.drop()]);
+    })
+    .then(([conn, NULL]) => {
+        log.info("Syncing database models");
         return conn.sync();
     })
     .then(_ => {
@@ -277,3 +283,13 @@ db.getConnection()
             error
         });
     });
+};
+
+if (require.main === module) {
+    main();
+}
+
+export {
+    bootstrapRestWithMenu,
+    bootstrapUserWithPurchase,
+};

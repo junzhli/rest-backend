@@ -34,6 +34,14 @@ class Database {
         return this.instance;
     }
 
+    async closeConnection() {
+        if (!(await this.checkConnection())) {
+            throw new Error("Connection is not ready");
+        }
+
+        return this.getSequelizeInstance().close();
+    }
+
     private async checkConnection() {
         try {
             await this.instance.authenticate();

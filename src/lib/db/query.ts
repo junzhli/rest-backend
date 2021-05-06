@@ -30,14 +30,9 @@ const findRestaurantsByWeekDayAndTime = async (weekDay: number, time: string) =>
     });
 };
 
-const findRestaurantsByPriceAndNumbersOfDishesWithLimit = (limit: number, dishes: number, price: number, lessThan: boolean) => {
-    // SELECT id, name, "cashBalance" 
-    // FROM 
-    // (SELECT "Menus"."restId", COUNT(*) FROM "Menus" WHERE price >= 10 GROUP BY "Menus"."restId" HAVING COUNT(*) >= 10) 
-    // AS t INNER JOIN "Restaurants" ON t."restId" = "Restaurants"."id" 
-    // ORDER BY "Restaurants"."id" ASC
-    const sql = (lessThan) ? `SELECT id, name, "cashBalance" FROM (SELECT "Menus"."restId", COUNT(*) FROM "Menus" WHERE price <= ${price} GROUP BY "Menus"."restId" HAVING COUNT(*) >= ${dishes}) AS t INNER JOIN "Restaurants" ON t."restId" = "Restaurants"."id" ORDER BY "Restaurants"."id" ASC` : 
-    `SELECT id, name, "cashBalance" FROM (SELECT "Menus"."restId", COUNT(*) FROM "Menus" WHERE price > ${price} GROUP BY "Menus"."restId" HAVING COUNT(*) >= ${dishes}) AS t INNER JOIN "Restaurants" ON t."restId" = "Restaurants"."id" ORDER BY "Restaurants"."id" ASC`;
+const findRestaurantsByPriceAndNumbersOfDishesWithLimit = (limit: number, dishes: number, priceStart: number, priceEnd: number, lessThan: boolean) => {
+    const sql = (lessThan) ? `SELECT id, name, "cashBalance" FROM (SELECT "Menus"."restId", COUNT(*) FROM "Menus" WHERE price >= ${priceStart} AND price <= ${priceEnd} GROUP BY "Menus"."restId" HAVING COUNT(*) <= ${dishes}) AS t INNER JOIN "Restaurants" ON t."restId" = "Restaurants"."id" ORDER BY "Restaurants"."id" ASC` : 
+    `SELECT id, name, "cashBalance" FROM (SELECT "Menus"."restId", COUNT(*) FROM "Menus" WHERE price >= ${priceStart} AND price <= ${priceEnd} GROUP BY "Menus"."restId" HAVING COUNT(*) >= ${dishes}) AS t INNER JOIN "Restaurants" ON t."restId" = "Restaurants"."id" ORDER BY "Restaurants"."id" ASC LIMIT ${limit}`;
 
     return db.getSequelizeInstance().query(sql, { model: Restaurant, mapToModel: true });
 };

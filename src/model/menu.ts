@@ -4,7 +4,7 @@ import db from "../lib/db";
 interface MenuAttributes {
     id: number;
     dishName: string;
-    price: number;
+    price: number | string;
     restId: number;
 }
 
@@ -32,7 +32,15 @@ Menu.init({
     },
     price: {
         type: DataTypes.DECIMAL,
-        allowNull: false
+        allowNull: false,
+        get() {
+            const value = this.getDataValue("price");
+            if (typeof value !== "string") {
+                return value;
+            }
+
+            return parseFloat(value);
+        }
     },
     restId: {
         type: DataTypes.INTEGER,

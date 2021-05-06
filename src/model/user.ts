@@ -4,7 +4,7 @@ import db from "../lib/db";
 
 interface UserAttributes {
     id: number;
-    cashBalance: number | Literal;
+    cashBalance: number | Literal | string;
     name: string;
 }
 
@@ -26,7 +26,15 @@ User.init({
     },
     cashBalance: {
         type: DataTypes.DECIMAL,
-        allowNull: false
+        allowNull: false,
+        get() {
+            const value = this.getDataValue("cashBalance");
+            if (typeof value !== "string") {
+                return value;
+            }
+
+            return parseFloat(value);
+        }
     },
     name: {
         type: DataTypes.STRING,

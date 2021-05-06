@@ -1,5 +1,5 @@
 import express from "express";
-import { body, check, query } from "express-validator";
+import { body, query } from "express-validator";
 import { validationResult } from "express-validator";
 import logger from "../lib/logger";
 

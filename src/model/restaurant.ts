@@ -9,7 +9,7 @@ import User from "./user";
 interface RestaurantAttributes {
     id: number;
     name: string;
-    cashBalance: number | Literal;
+    cashBalance: number | Literal | string;
 }
 
 interface RestaurantCreationAttributes extends Optional<RestaurantAttributes, "id"> {}
@@ -34,7 +34,15 @@ Restaurant.init({
     },
     cashBalance: {
         type: DataTypes.DECIMAL,
-        allowNull: false
+        allowNull: false,
+        get() {
+            const value = this.getDataValue("cashBalance");
+            if (typeof value !== "string") {
+                return value;
+            }
+
+            return parseFloat(value);
+        }
     }
 }, {
     sequelize: db.getSequelizeInstance(),
