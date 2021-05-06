@@ -13,10 +13,10 @@ const findRestaurantsByWeekDayAndTime = async (weekDay: number, time: string) =>
         where: {
             weekDay,
             startTime: {
-                [Op.gte]: time
+                [Op.lte]: time
             },
             endTime: {
-                [Op.lte]: time
+                [Op.gte]: time
             }
         },
         order: [
