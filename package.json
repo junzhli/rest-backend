@@ -8,6 +8,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon --watch '**/*.ts' --ignore '**/*.spec.ts' --exec 'ts-node' ./src/index.ts",
+    "prod": "NODE_ENV=production ts-node ./src/index.ts",
     "test": "DB_DISABLE_LOGGING=true jest",
     "bootstrap-database": "DB_DISABLE_LOGGING=true ts-node --files ./scripts/database.ts",
     "lint-fix": "tslint --fix --project ."
