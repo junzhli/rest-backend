@@ -1,11 +1,27 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
+import { Literal } from "sequelize/types/lib/utils";
 import db from "../lib/db";
 import Menu from "./menu";
 import OpeningHour from "./openingHour";
 import TransactionHistory from "./transactionHistory";
 import User from "./user";
 
-class Restaurant extends Model {}
+interface RestaurantAttributes {
+    id: number;
+    name: string;
+    cashBalance: number | Literal;
+}
+
+interface RestaurantCreationAttributes extends Optional<RestaurantAttributes, "id"> {}
+
+class Restaurant extends Model<RestaurantAttributes, RestaurantCreationAttributes> implements RestaurantAttributes {
+    id!: number;
+    name!: string;
+    cashBalance!: number;
+
+    readonly createdAt!: Date;
+    readonly updatedAt!: Date;
+}
 
 Restaurant.init({
     id: {

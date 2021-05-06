@@ -1,7 +1,29 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
 import db from "../lib/db";
+import Restaurant from "./restaurant";
 
-class OpeningHour extends Model {}
+interface OpeningHourAttributes {
+    id: number;
+    weekDay: number;
+    startTime: string;
+    endTime: string;
+    restId: number;
+}
+
+interface OpeningHourCreationAttributes extends Optional<OpeningHourAttributes, "id"> {}
+
+class OpeningHour extends Model<OpeningHourAttributes, OpeningHourCreationAttributes> implements OpeningHourAttributes {
+    id!: number;
+    weekDay!: number;
+    startTime!: string;
+    endTime!: string;
+    restId!: number;
+
+    readonly createdAt!: Date;
+    readonly updatedAt!: Date;
+
+    readonly Restaurant?: Restaurant;
+}
 
 OpeningHour.init({
     id: {
@@ -20,6 +42,9 @@ OpeningHour.init({
     endTime: {
         type: DataTypes.TIME,
         allowNull: false
+    },
+    restId: {
+        type: DataTypes.INTEGER,
     }
 }, {
     sequelize: db.getSequelizeInstance(),

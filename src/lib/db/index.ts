@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
-import { DBConfig } from "./config";
-import logger from "./logger";
-import { IDBConfigOptions } from "./types/db";
+import { DBConfig } from "../config";
+import logger from "../logger";
+import { IDBConfigOptions } from "../types/db";
 
 const log = logger("Database");
 
@@ -11,20 +11,7 @@ class Database {
     constructor({ 
         connectionUri = "postgres://user:pass@example.com:5432/dbname",
      }: IDBConfigOptions) {
-        this.instance = new Sequelize(connectionUri, {logging: false});
-        
-        // this.instance.sync()
-        //     .then(_ => {
-        //         log.info("Defind models syncing success");
-        //     })
-        //     .catch((error) => {
-        //         log.error("Defind models syncing failure");
-        //         log.log({
-        //             level: "error",
-        //             message: "",
-        //             error: error
-        //         });
-        //     })
+        this.instance = new Sequelize(connectionUri, {logging: true});
 
         this.checkConnection()
             .then((connected) => {

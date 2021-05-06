@@ -1,7 +1,23 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
+import { Literal } from "sequelize/types/lib/utils";
 import db from "../lib/db";
 
-class User extends Model {}
+interface UserAttributes {
+    id: number;
+    cashBalance: number | Literal;
+    name: string;
+}
+
+interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
+
+class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+    id!: number;
+    name!: string;
+    cashBalance!: number;
+
+    readonly createdAt!: Date;
+    readonly updatedAt!: Date;
+}
 
 User.init({
     id: {
@@ -20,6 +36,5 @@ User.init({
     sequelize: db.getSequelizeInstance(),
     modelName: "User"
 });
-
 
 export default User;
