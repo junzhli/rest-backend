@@ -11,9 +11,21 @@ class Database {
     constructor({ 
         connectionUri = "postgres://user:pass@example.com:5432/dbname",
         verboseLogging = true,
+        ssl = false,
      }: IDBConfigOptions) {
         this.instance = new Sequelize(connectionUri, 
-            {logging: verboseLogging, ssl: true, dialectOptions: { ssl: true}});
+             (ssl) ? {
+                logging: verboseLogging, 
+                ssl: true, 
+                dialectOptions: { 
+                    ssl: {
+                        require: true,
+                        rejectUnauthorized: false
+                    }
+                }
+            } : {
+                logging: verboseLogging
+            });
 
         this.checkConnection()
             .then((connected) => {
