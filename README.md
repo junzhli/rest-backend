@@ -17,7 +17,7 @@ Prerequisite
 -----
 * Nodejs >= v12
 * Yarn
-* ProgresSql >= v13.2 (with extension installed: pg_trgm)
+* ProgresSql >= v13.2
 
 Building
 -----

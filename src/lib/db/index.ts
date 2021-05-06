@@ -37,7 +37,19 @@ class Database {
             .then((connected) => {
                 if (!connected) {
                     log.warn("connection failure...");
+                    return;
                 }
+
+                // install extensions if not exists
+                this.instance.query("create extension if not exists pg_trgm", {raw: true})
+                    .catch(error => {
+                        log.error("Extension installation: pg_trgm failure");
+                        log.log({
+                            level: "error",
+                            message: "",
+                            error
+                        });
+                    });
             });
     }
 
