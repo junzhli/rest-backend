@@ -1,15 +1,17 @@
-Backend APIs
+# Backend APIs
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  
+[Hosted on Heroku](https://glints-node-js-backend.herokuapp.com) 
 
 ## Table of Contents
-- [Table of Contents](#table-of-contents)
-- [Prerequisite](#prerequisite)
-- [Building and test](#building-and-test)
-- [Run](#run)
-- [Bootstrap database from script](#bootstrap-database-from-script)
-- [Available APIs](#available-apis)
-- [Author](#author)
-- [License](#license)
+- [Backend APIs](#backend-apis)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisite](#prerequisite)
+  - [Building and test](#building-and-test)
+  - [Run](#run)
+  - [Bootstrap database from script](#bootstrap-database-from-script)
+  - [Available APIs](#available-apis)
+  - [Author](#author)
+  - [License](#license)
 
 Prerequisite
 -----
