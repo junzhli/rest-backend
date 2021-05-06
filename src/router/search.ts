@@ -10,13 +10,13 @@ export default () => {
     /** Search API */
 
     // search by date
-    router.get("/search/date", inputValidator.restaurantQueryInput, inputValidator.resultHandler, getRestaurantsByDate);
+    router.get("/date", inputValidator.restaurantQueryInput, inputValidator.resultHandler, getRestaurantsByDate);
 
     // search by price
-    router.get("/search/price", inputValidator.restaurantQueryTopByPrice, inputValidator.resultHandler, getRestaurantsByDishPriceRangeAndNumberOfDishes);
+    router.get("/price", inputValidator.restaurantQueryTopByPrice, inputValidator.resultHandler, getRestaurantsByDishPriceRangeAndNumberOfDishes);
 
     // search by restaurant's name or dish's name
-    router.get("/search/name", inputValidator.restaurantOrDishQueryByName, inputValidator.resultHandler, getResturantsOrDishesByName);
+    router.get("/name", inputValidator.restaurantOrDishQueryByName, inputValidator.resultHandler, getResturantsOrDishesByName);
 
     return router;
 };

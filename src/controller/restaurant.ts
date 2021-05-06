@@ -102,18 +102,22 @@ const getRestaurantsByDishPriceRangeAndNumberOfDishes = async (
     next: express.NextFunction
 ) => {
     try {
-        const {top, price, equality} = req.query;
-        if (typeof top !== "string" || typeof price !== "string" || typeof equality !== "string") {
-            throw new Error("date or time is not string");
+        const {top, dishes, priceStart, priceEnd, equality} = req.query;
+        if (typeof top !== "string" || typeof dishes !== "string"
+            || typeof priceStart !== "string" ||
+            typeof priceEnd !== "string" || typeof equality !== "string") {
+            throw new Error("top, dishes, priceStart, priceEnd or equality is not string");
         }
         const _top = Number(top);
-        const _price = Number(price);
-        if (isNaN(_top) || isNaN(_price)) {
+        const _dishes = Number(dishes);
+        const _priceStart = Number(priceStart);
+        const _priceEnd = Number(priceEnd);
+        if (isNaN(_top) || isNaN(_priceStart) || isNaN(_priceEnd)) {
             throw new Error("top or price is NaN");
         }
 
         const lessThan = (equality === "0") ? true : false; // 0: true, 1: false
-        const rests = await findRestaurantsByPriceAndNumbersOfDishesWithLimit(0, _top, _price, lessThan);
+        const rests = await findRestaurantsByPriceAndNumbersOfDishesWithLimit(_top, _dishes, _priceStart, _priceEnd, lessThan);
         
         const data: IResponseBodyRestaurant[] = rests.map((r) => {
             const {id, name, cashBalance} = r;
