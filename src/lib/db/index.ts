@@ -12,7 +12,7 @@ class Database {
         connectionUri = "postgres://user:pass@example.com:5432/dbname",
         verboseLogging = true,
      }: IDBConfigOptions) {
-        this.instance = new Sequelize(connectionUri, {logging: verboseLogging});
+        this.instance = new Sequelize(connectionUri, {logging: verboseLogging, ssl: true});
 
         this.checkConnection()
             .then((connected) => {
