@@ -1,4 +1,4 @@
-import { literal, Op, QueryTypes, Transaction } from "sequelize";
+import { literal, Op, QueryTypes, Sequelize, Transaction } from "sequelize";
 import db from ".";
 import Menu from "../../model/menu";
 import OpeningHour from "../../model/openingHour";
@@ -11,13 +11,32 @@ const findRestaurantsByWeekDayAndTime = async (weekDay: number, time: string) =>
     return OpeningHour.findAll({
         attributes: ["id", "weekDay", "startTime", "endTime"],
         where: {
-            weekDay,
-            startTime: {
-                [Op.lte]: time
-            },
-            endTime: {
-                [Op.gte]: time
-            }
+            [Op.or]: [
+                {
+                    weekDay,
+                    startTime: {
+                        [Op.lte]: Sequelize.col("endTime")
+                    },
+                    [Op.and]: {
+                        startTime: {
+                            [Op.lte]: time
+                        },
+                        endTime: {
+                            [Op.gte]: time
+                        }
+                    }
+                },
+                {
+                    weekDay: (weekDay - 1 > 0) ? weekDay - 1 : 6,
+                    startTime: {
+                        [Op.gt]: Sequelize.col("endTime")
+                    },
+                    endTime: {
+                        [Op.gte]: time
+                    }
+                }
+            ]
+            
         },
         order: [
             ["id", "ASC"]
