@@ -50,24 +50,24 @@ const findRestaurantsByWeekDayAndTime = async (weekDay: number, time: string) =>
 };
 
 const findRestaurantsByPriceAndNumbersOfDishesWithLimit = (limit: number, dishes: number, priceStart: number, priceEnd: number, lessThan: boolean) => {
-    const sql = (lessThan) ? `SELECT id, name, "cashBalance" FROM (SELECT "Menus"."restId", COUNT(*) FROM "Menus" WHERE price >= ${priceStart} AND price <= ${priceEnd} GROUP BY "Menus"."restId" HAVING COUNT(*) <= ${dishes}) AS t INNER JOIN "Restaurants" ON t."restId" = "Restaurants"."id" ORDER BY "Restaurants"."id" ASC` : 
-    `SELECT id, name, "cashBalance" FROM (SELECT "Menus"."restId", COUNT(*) FROM "Menus" WHERE price >= ${priceStart} AND price <= ${priceEnd} GROUP BY "Menus"."restId" HAVING COUNT(*) >= ${dishes}) AS t INNER JOIN "Restaurants" ON t."restId" = "Restaurants"."id" ORDER BY "Restaurants"."id" ASC LIMIT ${limit}`;
+    const sql = (lessThan) ? `SELECT id, name, "cashBalance" FROM (SELECT "Menus"."restId", COUNT(*) FROM "Menus" WHERE price >= :priceStart AND price <= :priceEnd GROUP BY "Menus"."restId" HAVING COUNT(*) <= :dishes) AS t INNER JOIN "Restaurants" ON t."restId" = "Restaurants"."id" ORDER BY "Restaurants"."id" ASC LIMIT :limit` : 
+    `SELECT id, name, "cashBalance" FROM (SELECT "Menus"."restId", COUNT(*) FROM "Menus" WHERE price >= :priceStart AND price <= :priceEnd GROUP BY "Menus"."restId" HAVING COUNT(*) >= :dishes) AS t INNER JOIN "Restaurants" ON t."restId" = "Restaurants"."id" ORDER BY "Restaurants"."id" ASC LIMIT :limit`;
 
-    return db.getSequelizeInstance().query(sql, { model: Restaurant, mapToModel: true });
+    return db.getSequelizeInstance().query(sql, { replacements: { priceStart, priceEnd, dishes, limit }, model: Restaurant, mapToModel: true });
 };
 
 const findRestaurantOrDishByName = (words: string[]) => {
     const similarity = words.join(" ");
-    const ilike = words.map(w => `'%${w}%'`).join(",");
+    const ilike = words.map(w => `%${w}%`);
 
     const sql = `
-    (SELECT id, name, similarity("name", '${similarity}') as revl, 'rest' as type, NULL as "restId" FROM "Restaurants" 
-    WHERE "Restaurants"."name" ilike any(array[${ilike}])) union ALL 
-    (SELECT id, "dishName", similarity("dishName", '${similarity}') as revl, 'dish' as type, "restId" FROM "Menus" 
-    WHERE "Menus"."dishName" ilike any(array[${ilike}])) ORDER BY revl DESC
+    (SELECT id, name, similarity("name", :similarity) as revl, 'rest' as type, NULL as "restId" FROM "Restaurants" 
+    WHERE "Restaurants"."name" ilike any(array[:ilike])) union ALL 
+    (SELECT id, "dishName", similarity("dishName", :similarity) as revl, 'dish' as type, "restId" FROM "Menus" 
+    WHERE "Menus"."dishName" ilike any(array[:ilike])) ORDER BY revl DESC
     `;
 
-    return db.getSequelizeInstance().query<IResultFindRestaurantOrDishByName>(sql, { type: QueryTypes.SELECT });
+    return db.getSequelizeInstance().query<IResultFindRestaurantOrDishByName>(sql, { replacements: {similarity, ilike} , type: QueryTypes.SELECT });
 };
 
 const findUser = (userId: number) => {

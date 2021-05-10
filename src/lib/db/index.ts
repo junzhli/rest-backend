@@ -30,7 +30,7 @@ class Database {
                     idle: 10000
                 }
             } : {
-                logging: verboseLogging
+                logging: (msg) => log.info(msg)
             });
 
         this.checkConnection()
