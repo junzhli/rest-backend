@@ -89,7 +89,7 @@ const findDish = (dishId: number) => {
 };
 
 const processUserPurchaseWithDish = async (userId: number, dishId: number) => {
-    const t = await db.getSequelizeInstance().transaction({isolationLevel: Transaction.ISOLATION_LEVELS.REPEATABLE_READ});
+    const t = await db.getSequelizeInstance().transaction({isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE});
 
     try {
         const menu = await Menu.findOne({
